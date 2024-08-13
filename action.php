@@ -24,12 +24,18 @@ class action_plugin_randompage2 extends DokuWiki_Action_Plugin {
         $pages = file($dir.'/page.idx');
         shuffle($pages);
 
-        foreach ($pages as $page) {
-            $page = trim($page);
+        $namespaces = $this->getConf('namespaces');
+
+        while(true) {
+            $page = trim($pages[rand(0, sizeof($pages) - 1)]);
             if(!page_exists($page)) continue;
             if(isHiddenPage($page)) continue;
+            if(sizeof($namespaces) != 0) {
+                if(!in_array(getNS($page), $namespaces)) continue;
+            }
             if (auth_quickaclcheck($page)) {
                 send_redirect(wl($page, '', true, '&'));
+                return;
             }
         }
     }
