@@ -5,4 +5,4 @@
  * @author asivery <asivery@protonmail.com>
  */
 
-$meta['namespaces'] = array('array');
+$meta['pattern'] = array('string');

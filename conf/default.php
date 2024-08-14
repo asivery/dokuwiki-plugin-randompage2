@@ -5,4 +5,4 @@
  * @author asivery <asivery@protonmail.com>
  */
 
-$conf['namespaces'] = array();
+$conf['pattern'] = '';

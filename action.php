@@ -24,7 +24,7 @@ class action_plugin_randompage2 extends DokuWiki_Action_Plugin {
         $pages = file($dir.'/page.idx');
         shuffle($pages);
 
-        $namespaces = $this->getConf('namespaces');
+        $pattern = $this->getConf('pattern');
 
         $visited = array();
         while(sizeof($visited) !== sizeof($pages)) {
@@ -33,30 +33,8 @@ class action_plugin_randompage2 extends DokuWiki_Action_Plugin {
             array_push($visited, $page);
             if(!page_exists($page)) continue;
             if(isHiddenPage($page)) continue;
-            if(sizeof($namespaces) != 0) {
-                $ok = false;
-                $this_ns = getNS($page);
-                foreach ($namespaces as $namespace) {
-                    if(str_ends_with($namespace, "*")){
-                        $namespace = substr($namespace, 0, -1);
-                        if(str_starts_with($this_ns, $namespace)) {
-                            $ok = true;
-                            break;
-                        }
-                    }elseif(str_starts_with($namespace, "*")){
-                        $namespace = substr($namespace, 1);
-                        if(str_ends_with($this_ns, $namespace)) {
-                            $ok = true;
-                            break;
-                        }
-                    }else {
-                        if($namespace === $this_ns) {
-                            $ok = true;
-                            break;
-                        }
-                    }
-                }
-                if(!$ok) continue;
+            if(strlen($pattern) != 0) {
+                if(preg_match($pattern, $page) != 1) continue;
             }
             if (auth_quickaclcheck($page)) {
                 send_redirect(wl($page, '', true, '&'));
